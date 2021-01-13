@@ -10,7 +10,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      title: 'Flutter New Branch',
+      title: 'Back to Flutter',
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
