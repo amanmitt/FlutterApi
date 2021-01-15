@@ -4,7 +4,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 void main() {
-  runApp(MaterialApp(                             // time UI
+  runApp(MaterialApp(
+    // time UI
     debugShowCheckedModeBanner: false,
     home: DatePage(),
   ));
