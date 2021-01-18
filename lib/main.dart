@@ -43,19 +43,28 @@ class _ApiPageState extends State<ApiPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       body: Stack(
         children: <Widget>[
           Container(
             decoration: BoxDecoration(
               image: DecorationImage(
-                  image: AssetImage('images/sunset.jpg'), fit: BoxFit.cover),
+                  image: AssetImage('images/drops.jpg'), fit: BoxFit.cover),
             ),
           ),
           Center(
             child: Column(children: <Widget>[
+              Container(
+                  child: Text("Type in 'city' name and press the search icon",
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 15
+                  ),),
+                  margin: EdgeInsets.fromLTRB(40, 80, 40, 0),
+              ),
               Stack(children: <Widget>[
                 Container(
-                  margin: EdgeInsets.fromLTRB(40, 100, 40, 0),
+                  margin: EdgeInsets.fromLTRB(40, 10, 40, 0),
                   child: TextField(
                       style: TextStyle(
                         color: Colors.white,
@@ -73,7 +82,7 @@ class _ApiPageState extends State<ApiPage> {
                       )),
                 ),
                 Container(
-                  margin: EdgeInsets.fromLTRB(350, 100, 60, 0),
+                  margin: EdgeInsets.fromLTRB(350, 10, 40, 0),
                   child: IconButton(
                       onPressed: () {
                         setState(() {
@@ -87,66 +96,102 @@ class _ApiPageState extends State<ApiPage> {
                       )),
                 ),
               ]),
-              FutureBuilder<Req>(
-                  future: futureReq,
-                  builder: (context, snapshot) {
-                    if (snapshot.hasData) {
-                      return Container(
-                        margin: EdgeInsets.fromLTRB(20, 180, 20, 0),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: <Widget>[
-                            Text(
-                              snapshot.data.location.name,
-                              style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 30,
-                                  fontWeight: FontWeight.bold,
-                                  letterSpacing: 2),
-                            ),
-                            SizedBox(
-                              height: 20,
-                            ),
-                            Row(
-                              children: <Widget>[
+                 FutureBuilder<Req>(
+                    future: futureReq,
+                    builder: (context, snapshot) {
+                      if (snapshot.hasData) {
+                        return Container(
+                          margin: EdgeInsets.fromLTRB(20, 80, 20, 0),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: <Widget>[
+                              Image.network('http:'+snapshot.data.current.condition.icon),
+                              Text(
+                                snapshot.data.location.name,
+                                style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 30,
+                                    fontWeight: FontWeight.bold,
+                                    letterSpacing: 2),
+                              ),
+                              SizedBox(
+                                height: 10,
+                              ),
+                              Text(
+                                snapshot.data.location.region,
+                                style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 20,
+                                    fontWeight: FontWeight.bold,
+                                    letterSpacing: 2),
+                              ),
+                              SizedBox(
+                                height: 10,
+                              ),
+                              Text(
+                                snapshot.data.location.country,
+                                style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 20,
+                                    fontWeight: FontWeight.bold,
+                                    letterSpacing: 2),
+                              ),
+                              SizedBox(
+                                height: 10,
+                              ),
+                              Column( children: <Widget>[
+                                 Row(
+                                  children: <Widget>[
+                                    SizedBox(
+                                      width: 110,
+                                    ),
+                                    Text(
+                                      snapshot.data.current.tempC.toString(),
+                                      style: TextStyle(
+                                          color: Colors.white, fontSize: 65),
+                                    ),
+                                    SizedBox(
+                                      width: 10,
+                                    ),
+                                    Text(
+                                      "°C",
+                                      style: TextStyle(
+                                          color: Colors.white, fontSize: 65),
+                                    ),
+                                  ],
+                                ),
                                 SizedBox(
-                                  width: 110,
+                                  height: 10,
                                 ),
-                                Text(
-                                  snapshot.data.current.tempC.toString(),
+                                Text(snapshot.data.current.condition.text,
                                   style: TextStyle(
-                                      color: Colors.white, fontSize: 65),
-                                ),
-                                SizedBox(
-                                  width: 10,
-                                ),
-                                Text(
-                                  "°C",
-                                  style: TextStyle(
-                                      color: Colors.white, fontSize: 65),
-                                ),
+                                    color: Colors.white,
+                                    fontSize: 30
+                                  ),
+                                )
                               ],
-                            ),
-                            SizedBox(
-                              width: 100,
-                            ),
-                          ],
-                        ),
-                      );
-                    } else if (snapshot.hasError) {
-                      return Container(
-                        margin: EdgeInsets.fromLTRB(0, 200, 0, 0),
-                        child: Text(
-                          'city not found',
-                          style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 30,
-                              letterSpacing: 2),
-                        ),
-                      );
-                    }
-                    return CircularProgressIndicator();
-                  }),
+                              ),
+                              SizedBox(
+                                width: 100,
+                              ),
+                            ],
+                          ),
+                        );
+                      } else if (snapshot.hasError) {
+                        return Container(
+                          margin: EdgeInsets.fromLTRB(0, 200, 0, 0),
+                          child: Text(
+                            'city not found',
+                            style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 30,
+                                letterSpacing: 2),
+                          ),
+                        );
+                      }
+                      return CircularProgressIndicator();
+                    }),
+
             ]),
           ),
         ],
@@ -166,7 +211,7 @@ class Req {
         ? new Location.fromJson(json['location'])
         : null;
     current =
-        json['current'] != null ? new Current.fromJson(json['current']) : null;
+    json['current'] != null ? new Current.fromJson(json['current']) : null;
   }
 
   Map<String, dynamic> toJson() {
@@ -183,32 +228,64 @@ class Req {
 
 class Location {
   String name;
+  String region;
+  String country;
 
-  Location({this.name});
+  Location({this.name, this.region, this.country});
 
   Location.fromJson(Map<String, dynamic> json) {
     name = json['name'];
+    region = json['region'];
+    country = json['country'];
   }
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
     data['name'] = this.name;
+    data['region'] = this.region;
+    data['country'] = this.country;
     return data;
   }
 }
 
 class Current {
   double tempC;
+  Condition condition;
 
-  Current({this.tempC});
+  Current({this.tempC, this.condition});
 
   Current.fromJson(Map<String, dynamic> json) {
     tempC = json['temp_c'];
+    condition = json['condition'] != null
+        ? new Condition.fromJson(json['condition'])
+        : null;
   }
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
     data['temp_c'] = this.tempC;
+    if (this.condition != null) {
+      data['condition'] = this.condition.toJson();
+    }
+    return data;
+  }
+}
+
+class Condition {
+  String text;
+  String icon;
+
+  Condition({this.text, this.icon});
+
+  Condition.fromJson(Map<String, dynamic> json) {
+    text = json['text'];
+    icon = json['icon'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['text'] = this.text;
+    data['icon'] = this.icon;
     return data;
   }
 }
